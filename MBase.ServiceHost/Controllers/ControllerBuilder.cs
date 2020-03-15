@@ -33,7 +33,7 @@ namespace MBase.MBase.ServiceHost.Controllers
             @file = @file.AddUsings(SF.UsingDirective(SF.IdentifierName(service.GetType().Namespace)));
             @file = @file.AddUsings(SF.UsingDirective(SF.IdentifierName(service.GetType().Namespace + ".Models")));
 
-            foreach (var item in service.Methodes.Where(m => typeof(ICommand).IsAssignableFrom(m.GetType())))
+            foreach (var item in service.Commands.Where(m => typeof(ICommand).IsAssignableFrom(m.GetType())))
             {
                 @file = @file.AddUsings(SF.UsingDirective(SF.IdentifierName(item.GetType().Namespace)));
             }
@@ -81,11 +81,11 @@ namespace MBase.MBase.ServiceHost.Controllers
                     .AddModifiers(SF.Token(SyntaxKind.PublicKeyword))
                     .WithBody(SF.Block(SF.ParseStatement($"this._service = ({service.GetType().Name})service;"))));
 
-            foreach (var item in service.Methodes.Where(m => typeof(ICommand).IsAssignableFrom(m.GetType())))
+            foreach (var item in service.Commands.Where(m => typeof(ICommand).IsAssignableFrom(m.GetType())))
             {
                 var syntax = @$"
 
-            var response = MethodHelper.ExecuteMethod<{item.Name}>(new {item.Name}(),new Request<{item.Name}>(request, new MessageEnvelope()));
+            var response = CommandHelper.ExecuteMethod<{item.Name}>(new {item.Name}(),new Request<{item.Name}>(request, new MessageEnvelope()));
             if(response.Envelope.HasErrors)
                 throw response.Envelope.Exceptions[0];
             return ({item.ResponseType.Name})response.Message;".Split(Environment.NewLine).Select(line => SF.ParseStatement(line));

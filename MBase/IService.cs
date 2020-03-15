@@ -7,6 +7,6 @@ namespace MBase
     public interface IService
     {
         string Name { get; }
-        IEnumerable<IMethod> Methodes { get; }
+        IEnumerable<ICommand> Commands { get; }
     }
 }

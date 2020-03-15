@@ -5,10 +5,10 @@ using System.Text;
 
 namespace MBase
 {
-    public static class MethodHelper
+    public static class CommandHelper
     {
 
-        public static IResponse ExecuteMethod<T>(T method, IRequest request) where T : IMethod
+        public static IResponse ExecuteMethod<T>(T method, IRequest request) where T : ICommand
         {
 
             foreach (var validation in method.Validators.Where(v => v.Type.HasFlag(ValidationType.Input)))

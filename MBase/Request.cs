@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MBase
 {
-    public class Request<T> : IRequest where T : IMethod
+    public class Request<T> : IRequest where T : ICommand
     {
         public Request()
         {

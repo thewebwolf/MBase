@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MBase
 {
-    public class Response<T> : IResponse where T : IMethod
+    public class Response<T> : IResponse where T : ICommand
     {
         public Response()
         {
