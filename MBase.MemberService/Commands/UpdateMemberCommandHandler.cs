@@ -5,11 +5,10 @@ using System.Threading.Tasks;
 using MBase;
 using MBase.MemberService.Commands;
 using MBase.MemberService.Models;
-using NServiceBus;
 
 namespace MBase.MemberService.Command
 {
-    public class UpdateMemberCommandHandler : ICommand, IHandleMessages<UpdateMemberCommand>
+    public class UpdateMemberCommandHandler : ICommand
     {
 
         public Type RequestType => typeof(UpdateMemberCommand);
@@ -33,11 +32,5 @@ namespace MBase.MemberService.Command
                 return (IResponse)new Response<UpdateMemberCommandHandler>(new Random().Next(1, int.MaxValue), request.Envelope);
             });
         }
-
-        public Task Handle(UpdateMemberCommand message, IMessageHandlerContext context)
-        {
-            return Execute(new Request<UpdateMemberCommandHandler>(message, new MessageEnvelope() { Id = Guid.NewGuid() }));
-        }
-
     }
 }

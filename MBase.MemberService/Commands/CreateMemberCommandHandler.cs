@@ -5,11 +5,10 @@ using System.Threading.Tasks;
 
 using MBase;
 using MBase.MemberService.Models;
-using NServiceBus;
 
 namespace MBase.MemberService.Commands
 {
-    public class CreateMemberCommandHandler : ICommand, IHandleMessages<CreateMemberCommand>
+    public class CreateMemberCommandHandler : ICommand 
     {
 
         public Type RequestType => typeof(CreateMemberCommand);
@@ -34,9 +33,5 @@ namespace MBase.MemberService.Commands
             });
         }
 
-        public Task Handle(CreateMemberCommand message, IMessageHandlerContext context)
-        {
-            return Execute(new Request<CreateMemberCommandHandler>(message, new MessageEnvelope() { Id = Guid.NewGuid() }));
-        }
     }
 }
