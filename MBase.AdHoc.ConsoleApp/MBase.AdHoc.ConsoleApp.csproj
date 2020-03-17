@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\MBase.MemberService\MBase.MemberService.csproj" />
     <ProjectReference Include="..\MBase.MemberSevice.Command\MBase.MemberSevice.Commands.csproj" />
   </ItemGroup>
 

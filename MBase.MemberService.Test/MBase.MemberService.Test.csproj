@@ -13,7 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\MBase.MemberService\MBase.MemberService.csproj" />
     <ProjectReference Include="..\MBase\MBase.csproj" />
   </ItemGroup>
 

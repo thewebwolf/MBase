@@ -4,4 +4,14 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="NServiceBus" Version="7.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MBase\MBase.MemberService.Events\MBase.MemberService.Events.csproj" />
+    <ProjectReference Include="..\MBase\MBase.MemberSevice.Command\MBase.MemberSevice.Commands.csproj" />
+    <ProjectReference Include="..\MBase\MBase\MBase.csproj" />
+  </ItemGroup>
+
 </Project>
