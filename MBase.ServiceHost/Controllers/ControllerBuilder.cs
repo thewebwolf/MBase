@@ -29,6 +29,8 @@ namespace MBase.MBase.ServiceHost.Controllers
                 .AddUsings(SF.UsingDirective(SF.IdentifierName("System")));
             @file = @file
                 .AddUsings(SF.UsingDirective(SF.IdentifierName("Microsoft.AspNetCore.Mvc")));
+            @file = @file
+                .AddUsings(SF.UsingDirective(SF.IdentifierName("System.Threading.Tasks")));
 
             @file = @file.AddUsings(SF.UsingDirective(SF.IdentifierName(service.GetType().Namespace)));
             @file = @file.AddUsings(SF.UsingDirective(SF.IdentifierName(service.GetType().Namespace + ".Models")));
@@ -77,7 +79,9 @@ namespace MBase.MBase.ServiceHost.Controllers
                                  SF.Parameter(
                                      SF.Identifier("service"))
                                  .WithType(
-                                    SF.IdentifierName("IService")))))
+                                    SF.IdentifierName("IService")))
+
+                             ))
                     .AddModifiers(SF.Token(SyntaxKind.PublicKeyword))
                     .WithBody(SF.Block(SF.ParseStatement($"this._service = ({service.GetType().Name})service;"))));
 
@@ -85,12 +89,12 @@ namespace MBase.MBase.ServiceHost.Controllers
             {
                 var syntax = @$"
 
-            var response = CommandHelper.ExecuteMethod<{item.Name}>(new {item.Name}(),new Request<{item.Name}>(request, new MessageEnvelope()));
+            var response = await CommandHelper.ExecuteMethod<{item.Name}>(new {item.Name}(),new Request<{item.Name}>(request, new MessageEnvelope()));
             if(response.Envelope.HasErrors)
                 throw response.Envelope.Exceptions[0];
             return ({item.ResponseType.Name})response.Message;".Split(Environment.NewLine).Select(line => SF.ParseStatement(line));
 
-                controllerMembers.Add(SF.MethodDeclaration(SF.ParseTypeName(item.ResponseType.Name), item.Name)
+                controllerMembers.Add(SF.MethodDeclaration(SF.ParseTypeName($"Task<{item.ResponseType.Name}>"), item.Name)
                      .WithAttributeLists(
                         SF.List(
                             new AttributeListSyntax[]{
@@ -116,6 +120,7 @@ namespace MBase.MBase.ServiceHost.Controllers
 
 
                     .AddModifiers(SF.Token(SyntaxKind.PublicKeyword))
+                    .AddModifiers(SF.Token(SyntaxKind.AsyncKeyword))
                     .WithBody(SF.Block(syntax)));
             }
             controllerMembers.Add(SF.MethodDeclaration(SF.ParseTypeName("ActionResult<string>"), "Get")

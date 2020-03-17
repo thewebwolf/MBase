@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Threading.Tasks;
+
+using MBase.MemberService.Commands;
 using Microsoft.CodeAnalysis;
 
 
@@ -6,11 +9,18 @@ namespace MBase.AdHoc.ConsoleApp
 {
     class Program
     {
-        static void Main(string[] args)
+
+        public static async Task Main()
         {
 
+
+            
         }
 
 
+    }
+    public class Message
+    {
+        public string Text { get; set; }
     }
 }

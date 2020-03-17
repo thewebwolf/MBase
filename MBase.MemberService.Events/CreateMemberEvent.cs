@@ -5,7 +5,7 @@ using System.Text;
 namespace MBase.MemberService.Events
 {
     [Serializable]
-    public class CreateNewMemberRequestEvent : IEvent
+    public class CreateMemberEvent : IEvent
     {
         public MessageEnvelope MessageEnvelope { get; set; }
 

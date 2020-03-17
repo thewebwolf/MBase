@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace MBase
 {
@@ -12,6 +13,6 @@ namespace MBase
         Type RequestType { get; }
         Type ResponseType { get; }
 
-        IResponse Execute(IRequest request);
+        Task<IResponse> Execute(IRequest request);
     }
 }

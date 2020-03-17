@@ -14,6 +14,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using System.IO;
 using MBase.MemberService;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace MBase.ServiceHost
 {
@@ -22,18 +25,38 @@ namespace MBase.ServiceHost
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
 
-        private string ApiTitle;
+        private IConfiguration Configuration { get; }
+        private ILoggerFactory LoggerFactory { get; }
+
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+            LoggerFactory = new LoggerFactory();
+        }
+
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddLogging(builder =>
+            {
+                builder.ClearProviders();
+                builder.AddConsole();
+                builder.AddDebug();
+            });
+            services.AddHealthChecks();
+
             var service = new Service();
             services.AddSingleton<IService>(service);
 
+            foreach (var command in service.Commands)
+            {
+                services.AddScoped(command.GetType());
+            }
+
             services.AddControllers().AddApplicationPart(Assembly.Load(ControllerBuilder.CreateControllerCode(service)));
 
-            ApiTitle = $"My {service.GetType().FullName} Service.";
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = ApiTitle, Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = $"My {service.GetType().FullName} Service.", Version = "v1" });
             });
         }
 
@@ -47,7 +70,7 @@ namespace MBase.ServiceHost
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", ApiTitle);
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My Microservices");
             });
 
             app.UseRouting();
@@ -56,6 +79,9 @@ namespace MBase.ServiceHost
                 endpoints.MapControllers();
             });
 
+            app.UseHealthChecks("/health", new HealthCheckOptions { Predicate = check => check.Tags.Contains("ready") });
         }
+
+
     }
 }
